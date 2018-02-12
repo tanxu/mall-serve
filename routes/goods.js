@@ -1,8 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose')
-var Goods = require('./../modules/goods')
-var User = require('./../modules/users')
+var productSchema = require('./../modules/goods')
+var userSchema = require('./../modules/users')
+var Goods = mongoose.model('Good', productSchema);
+var User = mongoose.model('User', userSchema)
 
 
 // 链接数据库
@@ -80,7 +82,7 @@ router.get('/list', function (req, res, next) {
 });
 
 router.post('/addCart', function (req, res, next) {
-  let userId = '100000077';
+  let userId = req.cookies.userId;
   let productId = req.body.productId;
 
   User.findOne({'userId': userId}, function (err, userdoc) {
@@ -89,14 +91,14 @@ router.post('/addCart', function (req, res, next) {
         status: '1',
         msg: 'error:' + err
       })
-    }else{
-      if(userdoc){
+    } else {
+      if (userdoc) {
         let goodItem = '';
         userdoc.cartList.forEach((item) => {
           if (item.productId === productId) {
             goodItem = item;
             item.productNum++;
-            console.log('item',item)
+            console.log('item', item)
           }
         })
 
@@ -109,7 +111,7 @@ router.post('/addCart', function (req, res, next) {
                 status: '1',
                 msg: 'error:' + err2
               })
-            }else{
+            } else {
               res.json({
                 status: '0',
                 msg: 'success',
@@ -123,10 +125,11 @@ router.post('/addCart', function (req, res, next) {
           Goods.findOne({'productId': productId}, function (err1, gooddoc) {
             if (err1) {
               res.json({
-                status: '0',
-                msg: 'error:' + err1
+                status: '1',
+                msg: err1.message,
+                result: ''
               })
-            }else{
+            } else {
               if (gooddoc) {
                 gooddoc.productNum = 1;
                 gooddoc.checked = true;
@@ -134,14 +137,15 @@ router.post('/addCart', function (req, res, next) {
                 userdoc.save(function (err2, doc2) {
                   if (err2) {
                     res.json({
-                      status: '0',
-                      msg: 'error:' + err2
-                    })
-                  }else{
-                    res.json({
                       status: '1',
-                      msg: 'success',
+                      msg: err2.message,
                       result: ''
+                    })
+                  } else {
+                    res.json({
+                      status: '0',
+                      msg: '添加购物车成功',
+                      result: doc2
                     })
                   }
                 })
@@ -151,7 +155,6 @@ router.post('/addCart', function (req, res, next) {
         }
       }
     }
-
 
 
   })

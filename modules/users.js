@@ -1,30 +1,21 @@
 var mongoose = require('mongoose')
 var Schema = mongoose.Schema;
+var productSchema = require('./goods')
+var addressSchema = require('./address')
+var orderSchema = require('./../modules/order')
 var userSchema = new Schema({
-  "userId":String,
-  "userName":String,
-  "userPwd":String,
-  "orderList":Array,
-  "cartList":[
-    {
-      "productId":String,
-      "productName":String,
-      "salePrice":String,
-      "productImage":String,
-      "checked":String,
-      "productNum":String
-    }
+  "userId": String,
+  "userName": String,
+  "userPwd": String,
+  "orderList": [
+    orderSchema
   ],
-  "addressList":[
-    {
-      "addressId": String,
-      "userName": String,
-      "streetName": String,
-      "postCode": Number,
-      "tel": Number,
-      "isDefault": Boolean
-    }
+  "cartList": [
+    productSchema
+  ],
+  "addressList": [
+    addressSchema
   ]
 })
 
-module.exports = mongoose.model('User',userSchema)
+module.exports = userSchema

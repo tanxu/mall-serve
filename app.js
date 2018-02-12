@@ -28,24 +28,24 @@ app.use(express.static(path.join(__dirname, 'public')));
 // 登录拦截
 app.use(function (req, res, next) {
   console.log(typeof req.cookies.userId)
-  if (req.cookies.userId && req.cookies.userId!=='undefined') {
+  if (req.cookies.userId && req.cookies.userId !== 'undefined') {
     // 已登录
     console.log('已登录')
     next();
   } else {
     // 未登录
     console.log('未登录')
-    if (req.path === '/goods/list' || req.path === '/users/login' || req.path === '/users/logout' || req.path==='/users/check') {
+    if (req.path === '/goods/list' || req.path === '/users/login' || req.path === '/users/logout' || req.path === '/users/check') {
       // 可以防伪
       console.log('可以防伪')
       next();
-    }else{
+    } else {
       // 不可以访问
-      console.log('不可以访问',req.path)
+      console.log('不可以访问', req.path)
       res.json({
-        status:'401',
-        msg:"需要登录",
-        result:''
+        status: '401',
+        msg: "需要登录",
+        result: ''
       });
       return false;
     }
