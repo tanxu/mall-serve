@@ -34,7 +34,7 @@ app.use(function (req, res, next) {
     next();
   } else {
     // 未登录
-    console.log('未登录')
+    console.log('未登录',req.path)
     if (req.path === '/goods/list' || req.path === '/users/login' || req.path === '/users/logout' || req.path === '/users/check') {
       // 可以防伪
       console.log('可以防伪')
